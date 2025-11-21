@@ -13,7 +13,8 @@ from routers import stations, users
 app = FastAPI()
 
 origin = [
-    "http://localhost:3000"
+    "http://localhost:3000",
+    "https://radio-frontend-two.vercel.app",
 ]
 
 app.add_middleware(
