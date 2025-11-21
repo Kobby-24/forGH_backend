@@ -1,4 +1,3 @@
-backend/__pycache__/main.cpython-313.pyc
-backend/__pycache__/main.cpython-313.pyc
 *.pyc
-backend/__pycache__/main.cpython-313.pyc
+.venv/
+__pycache__/
