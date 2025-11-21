@@ -21,6 +21,9 @@ def create_station(station: Station):
     )
     db.add(new_station)
     db.commit() 
+    db.refresh(new_station)
+    return new_station
+
 
 def format_iso(dt):
     return dt.isoformat() if dt else None

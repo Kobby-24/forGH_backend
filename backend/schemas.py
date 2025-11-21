@@ -1,5 +1,6 @@
 from datetime import datetime
 from pydantic import BaseModel
+from typing import  Optional
 
 class Station(BaseModel):
     name: str
@@ -57,6 +58,12 @@ class User(BaseModel):
     role: str
     station: int | None = None
     password: str
+class UserUpdate(BaseModel):
+    email: Optional[str] = None
+    username: Optional[str] = None
+    role: Optional[str] = None
+    station: Optional[int] = None
+    password: Optional[str] = None
 
 class Token(BaseModel):
     access_token: str
