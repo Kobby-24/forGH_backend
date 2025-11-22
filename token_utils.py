@@ -1,4 +1,4 @@
-import jwt
+from jose import jwt
 from schemas import TokenData
 from datetime import datetime, timedelta, timezone
 
