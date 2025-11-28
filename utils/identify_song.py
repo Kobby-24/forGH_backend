@@ -4,6 +4,7 @@ import csv
 import datetime
 import requests
 import dotenv
+from shazamio import Shazam
 
 dotenv.load_dotenv()
 
@@ -13,16 +14,18 @@ STATION_NAME = os.getenv("STATION_NAME")
 AUDD_API_TOKEN = os.getenv("AUDD_API_TOKEN")
 
 
-def identify_song(file_path: str):
+async def identify_song(file_path: str):
+    shazam = Shazam()
     """Send file to Audd.io for recognition"""
     try:
-        with open(file_path, "rb") as f:
-            data = {"api_token": AUDD_API_TOKEN, "return": "spotify,timecode"}
-            files = {"file": f}
-            result = requests.post("https://api.audd.io/", data=data, files=files)
-            response = result.json()
-            print("Audd.io response:", response)
-            return response.get("result")
+        out = await shazam.recognize_song(file_path)
+        if 'track' in out:
+            track_info = out['track']
+            return {
+                "title": track_info.get("title"),
+                "artist": track_info.get("subtitle"),
+                "url": track_info.get("url")
+            }
     except Exception as e:
         print("Error identifying song:", e)
         return None

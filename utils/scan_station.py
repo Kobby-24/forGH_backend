@@ -45,9 +45,10 @@ def scan_station(station_id: int):
         print("Song info received:", song_info)
 
         if song_info:
-            title = song_info.get("title", "Unknown Title")
-            artist = song_info.get("artist", "Unknown Artist")
-            log_song_play(db, station, title, artist)
+            pass
+            # title = song_info.get("title", "Unknown Title")
+            # artist = song_info.get("artist", "Unknown Artist")
+            # log_song_play(db, station, title, artist)
         else:
             print("No song detected.")
     finally:
