@@ -18,7 +18,7 @@ async def identify_song(file_path: str):
     shazam = Shazam()
     """Send file to Audd.io for recognition"""
     try:
-        out = await shazam.recognize_song(file_path)
+        out = await shazam.recognize(file_path)
         if 'track' in out:
             track_info = out['track']
             return {

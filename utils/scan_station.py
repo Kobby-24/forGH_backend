@@ -7,7 +7,7 @@ from .log_result import log_song_play
 from database import SessionLocal
 
 
-def scan_station(station_id: int):
+async def scan_station(station_id: int):
     """Runs the full scan-and-log process for a single station id."""
     # get_db() in `database.py` is a FastAPI dependency generator (it yields a session)
     # here we need a real Session instance for standalone/background use, so create one
@@ -41,14 +41,12 @@ def scan_station(station_id: int):
             return
 
         print("Identifying song...")
-        song_info = identify_song(file_path)
-        print("Song info received:", song_info)
+        song_info = await identify_song(file_path)
 
         if song_info:
-            pass
-            # title = song_info.get("title", "Unknown Title")
-            # artist = song_info.get("artist", "Unknown Artist")
-            # log_song_play(db, station, title, artist)
+            title = song_info.get("title", "Unknown Title")
+            artist = song_info.get("artist", "Unknown Artist")
+            log_song_play(db, station, title, artist)
         else:
             print("No song detected.")
     finally:
