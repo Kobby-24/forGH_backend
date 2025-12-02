@@ -1,4 +1,6 @@
 libasound2-dev
 libasound2t64
 libpulse0
+libblas3
+liblapack3
 ffmpeg
