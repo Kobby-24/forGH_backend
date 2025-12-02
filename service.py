@@ -29,7 +29,7 @@ def record_stream(duration=30):
 
     """Record audio snippet from radio stream"""
 
-    filename = f"recordings/{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.mp3"
+    filename = f"/tmp/{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.mp3"
 
     os.system(f'ffmpeg -y -i "{STREAM_URL}" -t {duration} -acodec copy {filename}')
 
