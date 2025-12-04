@@ -46,7 +46,10 @@ def scan_all_stations():
         asyncio.run(run_all())
 
     finally:
+        #log scan completion
+        
         db.close()
+
     print("--- Concurrent scheduled scan finished ---")
 
 

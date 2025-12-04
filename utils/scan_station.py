@@ -4,6 +4,7 @@ import models
 from .record_stream import record_stream
 from .identify_song import identify_song
 from .log_result import log_song_play
+from .log_scan import log_scan_completion
 from database import SessionLocal
 
 
@@ -50,4 +51,5 @@ async def scan_station(station_id: int):
         else:
             print("No song detected.")
     finally:
+        log_scan_completion(db, station_id, "completed" if song_info else "failed")
         db.close()

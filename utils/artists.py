@@ -16,7 +16,7 @@ def get_or_create_artist(db: Session, artist_name: str):
             country_code = None
             if data and data.get("artists") and data["artists"][0].get("strCountryCode"):
                 country_code = data["artists"][0]["strCountryCode"]
-            origin = "Ghanaian" if country_code == "GH" else "Foreign"
+            origin = "Local" if country_code == "GH" else "Foreign"
         except Exception:
             origin = "Foreign"  # fallback if API fails
         artist = models.Artists(name=artist_name, origin=origin)

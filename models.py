@@ -50,4 +50,12 @@ class Payments(Base):
     foreign_percentage = Column(Float)
     local_percentage = Column(Float)
     user = relationship("Users")
+
+class ScanLogs(Base):
+    __tablename__ = "scan_logs"
+    id = Column(Integer, primary_key=True, index=True)
+    station_id = Column(Integer, ForeignKey("stations.id"))
+    scan_time = Column(DateTime, default=datetime.now)
+    status = Column(String)
+    station = relationship("Stations")
     
