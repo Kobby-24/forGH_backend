@@ -15,6 +15,7 @@ app = FastAPI()
 origin = [
     "http://localhost:3000",
     "https://radio-frontend-two.vercel.app",
+    "https://musical-robot-4jrrwg5x5q56hq4xj-3000"
 ]
 
 app.add_middleware(
