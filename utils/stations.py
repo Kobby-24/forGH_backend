@@ -29,6 +29,7 @@ def format_iso(dt):
     return dt.isoformat() if dt else None
 
 
+
 def get_station_export(station_id: int):
     db = SessionLocal()
     try:
@@ -151,6 +152,48 @@ def get_station_export(station_id: int):
     finally:
         db.close()
 
+def get_station_export_for_today(station_id: int):
+    db = SessionLocal()
+    try:
+        station = db.get(models.Stations, station_id)
+        if not station:
+            raise HTTPException(status_code=404, detail="Station not found")
+
+        today_str = datetime.utcnow().strftime("%Y-%m-%d")
+
+        rows = (
+            db.query(
+                models.SongPlays.played_at,
+                models.SongPlays.title,
+                models.Artists.name.label("artist"),
+                models.Artists.origin,
+            )
+            .join(models.Artists, models.SongPlays.artist_id == models.Artists.id)
+            .filter(models.SongPlays.station_id == station_id)
+            .filter(func.to_char(models.SongPlays.played_at, "YYYY-MM-DD") == today_str)
+            .order_by(models.SongPlays.played_at.desc())
+            .all()
+        )
+        content_log = [
+            {
+                "timestamp": format_iso(r.played_at),
+                "title": r.title,
+                "artist": r.artist,
+                "origin": r.origin,
+            }
+            for r in rows
+        ]
+
+        response = {
+            "id": station.id,
+            "name": station.name,
+            "streamUrl": station.url,
+            "baseTax": station.base_tax,
+            "contentLog": content_log,
+        }
+        return response
+    finally:
+        db.close()
 
 def get_all_stations():
     db = SessionLocal()

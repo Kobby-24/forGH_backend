@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from utils.stations import get_station_export, get_all_stations, create_station
+from utils.stations import get_station_export, get_all_stations, create_station,get_station_export_for_today
 from schemas import Station
 
 
@@ -11,6 +11,9 @@ router = APIRouter(
 @router.get("/{station_id}/export")
 def station_export(station_id: int):
     return get_station_export(station_id)
+@router.get("/{station_id}/export/today")
+def station_export_today(station_id: int):
+    return get_station_export_for_today(station_id)
 
 @router.get("/")
 def all_stations():
