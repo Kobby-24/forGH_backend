@@ -75,4 +75,9 @@ class TokenData(BaseModel):
 class UserInDB(User):
     hashed_password: str
     role: str
+
+class ScanLog(BaseModel):
+    station_id: int
+    scan_time: datetime
+    status: str
     

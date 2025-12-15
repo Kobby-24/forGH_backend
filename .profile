@@ -1,0 +1,1 @@
+export LD_LIBRARY_PATH="$HOME/.apt/usr/lib/x86_64-linux-gnu/blas:$HOME/.apt/usr/lib/x86_64-linux-gnu/lapack:$HOME/.apt/usr/lib/x86_64-linux-gnu/pulseaudio:$LD_LIBRARY_PATH"

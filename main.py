@@ -7,7 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import models
 from utils import scan_station
 from routers import stations, users
-
+import asyncio
 
 
 app = FastAPI()
@@ -15,6 +15,7 @@ app = FastAPI()
 origin = [
     "http://localhost:3000",
     "https://radio-frontend-two.vercel.app",
+    "https://musical-robot-4jrrwg5x5q56hq4xj-3000"
 ]
 
 app.add_middleware(
@@ -28,36 +29,38 @@ app.add_middleware(
 app.include_router(stations.router)
 app.include_router(users.router)
 
-# def scan_all_stations():
-#     """Fetches all station IDs and runs the scanner for each concurrently."""
-#     print("--- Starting concurrent scheduled scan ---")
-#     db = SessionLocal()
-#     try:
-#         # We only need the station IDs to pass to the threads
-#         station_ids = [s.id for s in db.query(models.Stations.id).all()]
+def scan_all_stations():
+    """Fetches all station IDs and runs the scanner for each concurrently."""
+    print("--- Starting concurrent scheduled scan ---")
+    db = SessionLocal()
+    try:
+        station_ids = [s.id for s in db.query(models.Stations.id).all()]
 
-#         if not station_ids:
-#             print("No stations found in the database. Add a station to begin scanning.")
-#             return
+        if not station_ids:
+            print("No stations found in the database. Add a station to begin scanning.")
+            return
+        async def run_all():
+            # run scan_station concurrently as coroutines
+            await asyncio.gather(*(scan_station.scan_station(sid) for sid in station_ids))
 
-#         # Use a ThreadPoolExecutor to run scans for all stations at the same time
-#         with ThreadPoolExecutor(max_workers=len(station_ids)) as executor:
-#             print(station_ids)
-#             # executor.map will call scan_station.scan_station for each id in station_ids
-#             executor.map(scan_station.scan_station, station_ids)
+        # create a fresh event loop and run all scan coroutines
+        asyncio.run(run_all())
 
-#     finally:
-#         db.close()
-#     print("--- Concurrent scheduled scan finished ---")
+    finally:
+        #log scan completion
+        
+        db.close()
+
+    print("--- Concurrent scheduled scan finished ---")
 
 
-# @app.on_event("startup")
-# def start_scheduler():
-#     scheduler = BackgroundScheduler()
-#     # Schedule the job to run every 60 seconds
-#     scheduler.add_job(scan_all_stations, "interval", seconds=60)
-#     scheduler.start()
-#     print("Scheduler started. First scan will run shortly.")
+@app.on_event("startup")
+def start_scheduler():
+    scheduler = BackgroundScheduler()
+    # Schedule the job to run every 60 seconds
+    scheduler.add_job(scan_all_stations, "interval", seconds=60)
+    scheduler.start()
+    print("Scheduler started. First scan will run shortly.")
 
 
 @app.get("/")

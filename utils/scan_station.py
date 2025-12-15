@@ -4,10 +4,11 @@ import models
 from .record_stream import record_stream
 from .identify_song import identify_song
 from .log_result import log_song_play
+from .log_scan import log_scan_completion
 from database import SessionLocal
 
 
-def scan_station(station_id: int):
+async def scan_station(station_id: int):
     """Runs the full scan-and-log process for a single station id."""
     # get_db() in `database.py` is a FastAPI dependency generator (it yields a session)
     # here we need a real Session instance for standalone/background use, so create one
@@ -41,8 +42,7 @@ def scan_station(station_id: int):
             return
 
         print("Identifying song...")
-        song_info = identify_song(file_path)
-        print("Song info received:", song_info)
+        song_info = await identify_song(file_path)
 
         if song_info:
             title = song_info.get("title", "Unknown Title")
@@ -51,4 +51,5 @@ def scan_station(station_id: int):
         else:
             print("No song detected.")
     finally:
+        log_scan_completion(db, station_id, "completed" if song_info else "failed")
         db.close()
